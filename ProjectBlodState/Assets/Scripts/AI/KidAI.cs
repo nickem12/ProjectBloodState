@@ -21,8 +21,8 @@ public class KidAI : MonoBehaviour {
     void Move(Vector3 in_vec)
     {
         float step = 5 * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, in_vec, step);
-        moveCounter++;
+        transform.position = Vector3.Lerp(transform.position, in_vec, step);
+        if(transform.position == in_vec) { moveCounter++; }
     }
 
     void Update ()

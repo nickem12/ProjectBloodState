@@ -6,7 +6,6 @@ public class FindPath : MonoBehaviour {
 
     TGS.TerrainGridSystem tgs;
 
-	// Use this for initialization
 	void Start ()
     {
         tgs = TGS.TerrainGridSystem.instance;
@@ -15,7 +14,6 @@ public class FindPath : MonoBehaviour {
     public List<int> GetPath(Vector3 charPos, int endCell)
     {
         int startCell = tgs.CellGetIndex(tgs.CellGetAtPosition(charPos, true));
-
         List<int> PathList = tgs.FindPath(startCell, endCell, 0);
         for(int counter = 0; counter < PathList.Count; counter++)
         {
@@ -24,7 +22,6 @@ public class FindPath : MonoBehaviour {
         return (PathList);
     }
 	
-	// Update is called once per frame
 	void Update ()
     {
 		
