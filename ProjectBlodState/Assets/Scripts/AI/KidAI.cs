@@ -4,47 +4,27 @@ using UnityEngine;
 
 public class KidAI : MonoBehaviour {
 
+    TGS.TerrainGridSystem tgs;
+
     enum State {IDLE, MOVING, MOVESELECT}
     State state;
 
-	// Use this for initialization
+    List<int> moveList;
+    short moveCounter = 0;
+
 	void Start ()
     {
-        state = State.IDLE;
-	}
+        state = State.MOVESELECT;
+        tgs = TGS.TerrainGridSystem.instance;
+    }
 	
-    void Move()
+    void Move(Vector3 in_vec)
     {
-
+        float step = 5 * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, in_vec, step);
+        moveCounter++;
     }
 
-    void SetMove()
-    {
-        this.GetComponent<FindPath>().GetPath(this.transform.position, GetRayCast("Terrain"));
-    }
-
-    Vector3 GetRayCast(string input) //returns tag of selected object
-    {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, 100.0f))
-        {
-            if(hit.collider.tag == input)
-            {
-                return (hit.transform.position);
-            }
-            else
-            {
-                return (new Vector3(0,0,0));
-            }
-        }
-        else
-        {
-            return (new Vector3(0, 0, 0));
-        }
-    }
-
-    // Update is called once per frame
     void Update ()
     {
         switch(state)
@@ -54,7 +34,32 @@ public class KidAI : MonoBehaviour {
                 break;
 
             case State.MOVING:
-                Move();
+                Move(tgs.CellGetPosition(moveList[moveCounter]));
+                if (moveCounter == moveList.Count - 1)
+                {
+                    moveCounter = 0;
+                    state = State.MOVESELECT;
+                }
+                break;
+
+            case State.MOVESELECT:
+                if(Input.GetMouseButtonUp(0))                   //gets path when left mouse is released and over terrain
+                {
+                    int t_cell = tgs.cellHighlightedIndex;
+                    tgs.CellFadeOut(t_cell, Color.red, 50);
+                    if (t_cell != -1)                           //checks if we selected a cell
+                    {
+                        moveList = this.GetComponent<FindPath>().GetPath(transform.position, t_cell);
+                        int startCell = tgs.CellGetIndex(tgs.CellGetAtPosition(this.transform.position, true));
+                        tgs.CellFadeOut(startCell, Color.red, 50);
+                        moveCounter = 0;
+                        state = State.MOVING;
+                    }
+                    else
+                    {
+                        Debug.Log("NULL_CELL");
+                    }
+                }
                 break;
         }
 	}

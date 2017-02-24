@@ -2196,7 +2196,6 @@ namespace TGS
 								float d = _terrain.terrainData.size.z;
 								localPoint.x = localPoint.x / w - 0.5f;
 								localPoint.y = localPoint.z / d - 0.5f;
-                                Debug.Log("hit");
 								return true;
 							}
 						}
