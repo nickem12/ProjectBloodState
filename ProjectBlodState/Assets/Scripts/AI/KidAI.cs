@@ -21,7 +21,7 @@ public class KidAI : MonoBehaviour {
     void Move(Vector3 in_vec)
     {
         float step = 5 * Time.deltaTime;
-        transform.position = Vector3.Lerp(transform.position, in_vec, step);
+        transform.position = Vector3.MoveTowards(transform.position, in_vec, step);
         if(transform.position == in_vec) { moveCounter++; }
     }
 
@@ -34,8 +34,11 @@ public class KidAI : MonoBehaviour {
                 break;
 
             case State.MOVING:
-                Move(tgs.CellGetPosition(moveList[moveCounter]));
-                if (moveCounter == moveList.Count - 1)
+                if (moveCounter < moveList.Count)
+                { 
+                    Move(tgs.CellGetPosition(moveList[moveCounter]));
+                }
+                else
                 {
                     moveCounter = 0;
                     state = State.MOVESELECT;
@@ -50,8 +53,10 @@ public class KidAI : MonoBehaviour {
                     if (t_cell != -1)                           //checks if we selected a cell
                     {
                         moveList = this.GetComponent<FindPath>().GetPath(transform.position, t_cell);
+
                         int startCell = tgs.CellGetIndex(tgs.CellGetAtPosition(this.transform.position, true));
                         tgs.CellFadeOut(startCell, Color.red, 50);
+
                         moveCounter = 0;
                         state = State.MOVING;
                     }
