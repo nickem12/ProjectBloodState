@@ -84,8 +84,8 @@
      <Compile Include="Assets\Scripts\Characters\PlayerStats.cs" />
      <Compile Include="Assets\Scripts\General\Action_Bar.cs" />
      <Compile Include="Assets\Scripts\General\Camera_Controller.cs" />
-     <Compile Include="Assets\Scripts\General\Click_Controller.cs" />
      <Compile Include="Assets\Scripts\General\FindPath.cs" />
+     <Compile Include="Assets\Scripts\General\Selected_Cotroller.cs" />
      <Compile Include="Assets\TerrainGridSystem\Demos\Common\GUIResizer.cs" />
      <Compile Include="Assets\TerrainGridSystem\Demos\Demo01_TerrainBalls\BallController.cs" />
      <Compile Include="Assets\TerrainGridSystem\Demos\Demo01_TerrainBalls\Demo1.cs" />

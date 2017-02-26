@@ -8,7 +8,7 @@ namespace Group
     
     //Monday feb 12, 1 hour 5:30 6:30
     //Wednesday feb 15 1 hour 8:40 9:40 || 10:09
-    public class PlayerStats
+    public class PlayerStats : MonoBehaviour
     {
         public enum ABILITIES { DOUBLE_HEALTH = 0, MOVE_DASH, HACKS, CAN_REVIVE, SUPPLIES };
 
