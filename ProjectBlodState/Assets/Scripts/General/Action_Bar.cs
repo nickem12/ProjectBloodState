@@ -24,6 +24,6 @@ public class Action_Bar : MonoBehaviour {
 
     void DrawActionBar()
     {
-        GUI.DrawTexture(position, actionBar);
+        GUI.DrawTexture(new Rect(Screen.width * position.x, Screen.height * position.y, Screen.width * position.width, Screen.height * position.height), actionBar);
     }
 }
