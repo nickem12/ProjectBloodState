@@ -10,7 +10,6 @@ public class KidAI : MonoBehaviour {
     State state;
 
     List<int> moveList;
-    List<Vector3> moveVecList;
     short moveCounter = 0;
 
 	void Start ()
@@ -37,7 +36,7 @@ public class KidAI : MonoBehaviour {
             case State.MOVING:
                 if (moveCounter < moveList.Count)
                 { 
-                    Move(moveVecList[moveCounter]);
+                    Move(tgs.CellGetPosition(moveList[moveCounter]));
                 }
                 else
                 {
@@ -53,10 +52,18 @@ public class KidAI : MonoBehaviour {
                     tgs.CellFadeOut(t_cell, Color.red, 50);
                     if (t_cell != -1)                           //checks if we selected a cell
                     {
-                        moveList = this.GetComponent<FindPath>().GetPath(transform.position, t_cell);
-                        for(int counter = 0; counter < moveList.Count; counter++)
+                        int startCell = tgs.CellGetIndex(tgs.CellGetAtPosition(transform.position, true));
+                        moveList = tgs.FindPath(startCell, t_cell, 0);
+                        //for (int counter = 0; counter < moveList.Count; counter++)
+                        //{
+                            //tgs.CellFadeOut(moveList[counter], Color.green, 50f);
+                        //}
+                        for (int counter = 0; counter < moveList.Count; counter++)
                         {
-                            moveVecList.Add(tgs.CellGetPosition(moveList[counter]));
+                            Vector3 t_vec = tgs.CellGetPosition(moveList[counter]);
+                            TGS.Cell cell = tgs.CellGetAtPosition(t_vec);
+                            int index = tgs.CellGetIndex(cell);
+                            tgs.CellFadeOut(index, Color.green, 50f);
                         }
                         moveCounter = 0;
                         state = State.MOVING;

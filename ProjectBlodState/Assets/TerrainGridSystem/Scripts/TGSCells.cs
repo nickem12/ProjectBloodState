@@ -545,7 +545,7 @@ namespace TGS {
 		/// Returns the cell object under position in local coordinates
 		/// </summary>
 		public Cell CellGetAtPosition(Vector3 position) {
-			return GetCellAtPoint(position, false);
+			return GetCellAtPoint(position, true);
 		}
 
 		/// <summary>

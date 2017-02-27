@@ -15,10 +15,6 @@ public class FindPath : MonoBehaviour {
     {
         int startCell = tgs.CellGetIndex(tgs.CellGetAtPosition(charPos, true));
         List<int> PathList = tgs.FindPath(startCell, endCell, 0);
-        for(int counter = 0; counter < PathList.Count; counter++)
-        {
-            tgs.CellFadeOut(PathList[counter], Color.green, 50f);
-        }
         return (PathList);
     }
 	
