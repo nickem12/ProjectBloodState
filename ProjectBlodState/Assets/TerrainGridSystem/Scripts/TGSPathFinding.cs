@@ -97,7 +97,7 @@ namespace TGS {
 		/// Returns an optimal path from startPosition to endPosition with options.
 		/// </summary>
 		/// <returns>The route consisting of a list of cell indexes.</returns>
-		/// <param name="startPosition">Start position in map coordinates (-0.5...0.5)</param>
+		/// <param name="startPosition">Start position in map coordinates (-0.5...0.5)</param>+--
 		/// <param name="endPosition">End position in map coordinates (-0.5...0.5)</param>
 		/// <param name="maxSearchCost">Maximum search cost for the path finding algorithm. A value of 0 will use the global default defined by pathFindingMaxCost</param>
 		public List<int> FindPath (int cellIndexStart, int cellIndexEnd, int maxSearchCost = 0)
