@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Characters/Models/Enemies/BattleDroids/sample/Battledroids_sampleScene.unity
+- path: Assets/Scene/Level.unity
   isLoaded: 1
   isActive: 1
