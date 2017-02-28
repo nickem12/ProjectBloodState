@@ -5,19 +5,69 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour {
 
     public enum FSM { IDLE, MOVING, ATTACKING}
+    public FSM state;
     public Vector3 TargetPlayer;
+    bool turn;
+    float aggroDistance = 50;
+    float attackRange = 20;
 
 	void Start ()
     {
-
+        state = FSM.IDLE;
 	}
 	
 	void Update ()
     {
-		
+		if(turn)
+        {
+            float dist = UpdateTarget();
+            switch (state)
+            {
+                case FSM.IDLE:
+                    if (dist < aggroDistance)
+                    {
+                        state = FSM.ATTACKING;
+                    }
+                    else
+                    {
+                        turn = false;
+                    }
+                    break;
+
+                case FSM.ATTACKING:
+                    if(dist < attackRange)
+                    {
+                        //attack
+                        turn = false;
+                    }
+                    else
+                    {
+                        PlanMove();
+                        state = FSM.MOVING;
+                    }
+                    break;
+
+                case FSM.MOVING:
+                    if (Move())
+                    {
+                        turn = false;
+                    }
+                    break;
+            }
+        }
 	}
 
-    void UpdateTarget()
+    bool Move()
+    {
+        return true;
+    }
+
+    void PlanMove()
+    {
+
+    }
+
+    float UpdateTarget()
     {
         float dist = 0;
         float t_dist = 0;
@@ -42,5 +92,6 @@ public class EnemyAI : MonoBehaviour {
                 TargetPlayer = TargetList[count].transform.position;
             }
         }
+        return dist;
     }
 }
