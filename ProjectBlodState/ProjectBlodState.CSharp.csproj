@@ -108,8 +108,17 @@
     <Compile Include="Assets\Characters\Models\PlayerCharacters\Yurowm\Demo\Scripts\CharacterPanel.cs" />
     <Compile Include="Assets\Characters\Models\PlayerCharacters\Yurowm\Demo\Scripts\CharacterViewer.cs" />
     <Compile Include="Assets\Characters\Models\PlayerCharacters\Yurowm\Demo\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\AI\EnemyAI.cs" />
+    <Compile Include="Assets\Scripts\AI\KidAI.cs" />
+    <Compile Include="Assets\Scripts\Characters\AlienStats.cs" />
+    <Compile Include="Assets\Scripts\Characters\PlayerStats.cs" />
+    <Compile Include="Assets\Scripts\General\Action_Bar.cs" />
     <Compile Include="Assets\Scripts\General\Camera_Controller.cs" />
     <Compile Include="Assets\Scripts\General\Click_Controller.cs" />
+    <Compile Include="Assets\Scripts\General\FindPath.cs" />
+    <Compile Include="Assets\Scripts\General\Selected_Cotroller.cs" />
+    <Compile Include="Assets\Scripts\Player.cs" />
+    <Compile Include="Assets\Scripts\TurnHandler.cs" />
     <Compile Include="Assets\TerrainGridSystem\Demos\Common\GUIResizer.cs" />
     <Compile Include="Assets\TerrainGridSystem\Demos\Demo01_TerrainBalls\BallController.cs" />
     <Compile Include="Assets\TerrainGridSystem\Demos\Demo01_TerrainBalls\Demo1.cs" />
