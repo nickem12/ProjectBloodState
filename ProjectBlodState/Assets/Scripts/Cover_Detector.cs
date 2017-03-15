@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class Cover_Detector : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+	void Update ()
+    {
 		
 	}
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        if(collider.tag == "Cover")
+        {
+            
+        }
+    }
 }

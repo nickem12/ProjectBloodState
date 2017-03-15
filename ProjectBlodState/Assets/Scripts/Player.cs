@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Turns
 {
-    public class Player
+    public class Player : MonoBehaviour
     {
 
         public bool End_Turn;
