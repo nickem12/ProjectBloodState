@@ -113,10 +113,10 @@
     <Compile Include="Assets\Scripts\AI\KidAI.cs" />
     <Compile Include="Assets\Scripts\Characters\AlienStats.cs" />
     <Compile Include="Assets\Scripts\Characters\PlayerStats.cs" />
-    <Compile Include="Assets\Scripts\Cover_Detector.cs" />
     <Compile Include="Assets\Scripts\General\Action_Bar.cs" />
     <Compile Include="Assets\Scripts\General\Camera_Controller.cs" />
     <Compile Include="Assets\Scripts\General\Click_Controller.cs" />
+    <Compile Include="Assets\Scripts\General\Cover_Detector.cs" />
     <Compile Include="Assets\Scripts\General\FindPath.cs" />
     <Compile Include="Assets\Scripts\General\Selected_Cotroller.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
