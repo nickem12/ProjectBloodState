@@ -9,13 +9,21 @@ public class Gameplay_Handler : MonoBehaviour {
     GameObject Cam;
     public enum GameState { PLAYER, ENEMY }
     public enum MoveState { MOVING, MOVESELECT }
+    public enum EnemyState { IDLE, ATTACKING, MOVESELECT, MOVING }
     MoveState MState;
     GameState GState;
+    EnemyState EState;
     public short SelectChar;
 
     TerrainGridSystem tgs;
     short moveCounter = 0;
     List<int> moveList;
+    GameObject TargetPlayer;
+    float aggroDistance = 50;
+    float attackRange = 5;
+    short EnemyIndex = 0;
+    float dist = 0;
+    public short Enemy_MoveDist = 10;
 
     public short PlayerRange;
 
@@ -25,6 +33,7 @@ public class Gameplay_Handler : MonoBehaviour {
         Cam = GameObject.Find("Cam_obj");
         GState = GameState.PLAYER;
         MState = MoveState.MOVESELECT;
+        EState = EnemyState.IDLE;
         tgs = TerrainGridSystem.instance;
         PlayerRange = 50;
     }
@@ -34,19 +43,104 @@ public class Gameplay_Handler : MonoBehaviour {
         switch(GState)
         {
             case GameState.PLAYER:
+                if(Input.GetKeyDown(KeyCode.F))
+                {
+                    GetComponent<TurnHandler>().EndTurn();
+                }
                 SelectChar = Select.GetComponent<Selected_Cotroller>().Selected_Character;
                 UpdateActions(Select.GetComponent<Selected_Cotroller>().Selected_Action);
                 if(GetComponent<TurnHandler>().Perform_Turn())
                 {
+                    EState = EnemyState.IDLE;
                     GState = GameState.ENEMY;
+                    EnemyIndex = 0;
+                    GetComponent<EnemyTurnHandler>().NewTurn();
+                    Debug.Log("Enemy Turn Starting");
                 }
                 break;
 
             case GameState.ENEMY:
-
+                EnemyTurn();
+                if(GetComponent<EnemyTurnHandler>().CheckEnemy(EnemyIndex, "End"))
+                {
+                    EnemyIndex++;
+                    EState = EnemyState.IDLE;
+                }
+                if (GetComponent<EnemyTurnHandler>().Perform_Turn())
+                {
+                    MState = MoveState.MOVESELECT;
+                    GState = GameState.PLAYER;
+                    GetComponent<TurnHandler>().NewTurn();
+                    Debug.Log("Player Turn Starting");
+                }
                 break;
         }
 	}
+
+    void EnemyTurn()
+    {
+        switch (EState)
+        {
+            case EnemyState.IDLE:
+                dist = UpdateTarget(GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex));
+                if (dist < aggroDistance)
+                {
+                    EState = EnemyState.MOVESELECT;
+                }
+                else
+                {
+                    GetComponent<EnemyTurnHandler>().ModifyEnemy(EnemyIndex, "Attack");
+                    GetComponent<EnemyTurnHandler>().ModifyEnemy(EnemyIndex, "Move");
+                }
+                break;
+
+            case EnemyState.ATTACKING:
+                int damage = GetComponent<Attack_Controller>().AttackTarget(GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex), TargetPlayer, PlayerRange);
+                if (damage > 0)
+                {
+                    Debug.Log("Hit Player for: " + damage);
+                    TargetPlayer.GetComponent<PlayerStats>().Health -= (short)damage;
+                }
+                GetComponent<EnemyTurnHandler>().ModifyEnemy(EnemyIndex, "Attack");
+                GetComponent<EnemyTurnHandler>().ModifyEnemy(EnemyIndex, "End");
+                break;
+
+            case EnemyState.MOVESELECT:
+                if(dist < attackRange)
+                {
+                    EState = EnemyState.ATTACKING;
+                }
+                else
+                {
+                    GetPath(GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex), tgs.CellGetIndex(tgs.CellGetAtPosition(TargetPlayer.transform.position)));
+                    EState = EnemyState.MOVING;
+                }
+                break;
+
+            case EnemyState.MOVING:
+                if (moveCounter <= Enemy_MoveDist)
+                {
+                    if (moveCounter < moveList.Count)
+                    {   //moves enemy
+                        Move(tgs.CellGetPosition(moveList[moveCounter]), GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex));
+                    }
+                    else
+                    {
+                        moveCounter = 0;
+                        EState = EnemyState.ATTACKING;
+                        GetComponent<EnemyTurnHandler>().ModifyEnemy(EnemyIndex, "Move");
+                    }
+                }
+                else
+                {
+                    moveCounter = 0;
+                    EState = EnemyState.ATTACKING;
+                    GetComponent<EnemyTurnHandler>().ModifyEnemy(EnemyIndex, "Move");
+                }
+                break;
+        }
+
+    }
 
     void UpdateActions(short input)
     {
@@ -60,7 +154,7 @@ public class Gameplay_Handler : MonoBehaviour {
                         case MoveState.MOVESELECT:
                             if (Input.GetMouseButtonUp(0))
                             {   //gets path when left mouse is released and over terrain
-                                GetPath(GetComponent<TurnHandler>().GetCharacter(SelectChar));
+                                GetPath(GetComponent<TurnHandler>().GetCharacter(SelectChar), tgs.cellHighlightedIndex);
                             }
                             break;
 
@@ -95,6 +189,7 @@ public class Gameplay_Handler : MonoBehaviour {
                                 if (damage > 0)
                                 {
                                     hit.collider.gameObject.GetComponent<EnemyStats>().health -= (short)damage;
+                                    Debug.Log("Hit enemy for: " + damage);
                                     GetComponent<TurnHandler>().ModifyCharacter(SelectChar, "Attack");
                                 }
                             }
@@ -112,14 +207,13 @@ public class Gameplay_Handler : MonoBehaviour {
         }
     }
 
-    void GetPath(GameObject MoveChar)
+    void GetPath(GameObject MoveChar, int targetCell)
     {
-        int t_cell = tgs.cellHighlightedIndex;
-        tgs.CellFadeOut(t_cell, Color.red, 50);
-        if (t_cell != -1)
+        tgs.CellFadeOut(targetCell, Color.red, 50);
+        if (targetCell != -1)
         {   //checks if we selected a cell
             int startCell = tgs.CellGetIndex(tgs.CellGetAtPosition(MoveChar.transform.position, true));
-            moveList = tgs.FindPath(startCell, t_cell, 0);
+            moveList = tgs.FindPath(startCell, targetCell, 0);
             if (moveList == null) return;
             for (int counter = 0; counter < moveList.Count; counter++)
             {
@@ -151,4 +245,34 @@ public class Gameplay_Handler : MonoBehaviour {
             moveCounter++;
         }
     }
+
+    float UpdateTarget(GameObject Enemy)
+    {
+        float dist = 0;
+        float t_dist = 0;
+        short count = 0;
+        GameObject[] TargetList = GameObject.FindGameObjectsWithTag("Player");
+
+        if (TargetPlayer != null)
+        {
+            dist = Vector3.Distance(Enemy.transform.position, TargetPlayer.transform.position);
+        }
+        else
+        {
+            TargetPlayer = TargetList[0];
+            dist = Vector3.Distance(Enemy.transform.position, TargetPlayer.transform.position);
+        }
+
+        for (; count < TargetList.Length; count++)
+        {
+            t_dist = Vector3.Distance(Enemy.transform.position, TargetList[count].transform.position);
+            if (t_dist < dist)
+            {
+                dist = t_dist;
+                TargetPlayer = TargetList[count];
+            }
+        }
+        return dist;
+    }
+
 }

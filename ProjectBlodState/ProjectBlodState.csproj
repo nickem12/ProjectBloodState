@@ -118,6 +118,7 @@
     <Compile Include="Assets\Scripts\General\Camera_Controller.cs" />
     <Compile Include="Assets\Scripts\General\Click_Controller.cs" />
     <Compile Include="Assets\Scripts\General\Cover_Detector.cs" />
+    <Compile Include="Assets\Scripts\General\EnemyTurnHandler.cs" />
     <Compile Include="Assets\Scripts\General\FindPath.cs" />
     <Compile Include="Assets\Scripts\General\Gameplay_Handler.cs" />
     <Compile Include="Assets\Scripts\General\Selected_Cotroller.cs" />

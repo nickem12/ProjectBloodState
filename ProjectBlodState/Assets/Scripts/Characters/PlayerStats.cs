@@ -13,6 +13,6 @@ public class PlayerStats : MonoBehaviour
 
     void Start()
     {
-        Health = 10;
+        Health = 20;
     }
 }

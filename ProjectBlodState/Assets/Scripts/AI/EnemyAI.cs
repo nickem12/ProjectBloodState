@@ -7,7 +7,6 @@ public class EnemyAI : MonoBehaviour {
     public enum FSM { IDLE, MOVING, ATTACKING}
     public FSM state;
     public Vector3 TargetPlayer;
-    bool turn;
     float aggroDistance = 50;
     float attackRange = 20;
 
@@ -16,56 +15,38 @@ public class EnemyAI : MonoBehaviour {
         state = FSM.IDLE;
 	}
 	
-	void Update ()
+	public void UpdateEnemy ()
     {
-		if(turn)
+        float dist = UpdateTarget();
+        switch (state)
         {
-            float dist = UpdateTarget();
-            switch (state)
-            {
-                case FSM.IDLE:
-                    if (dist < aggroDistance)
-                    {
-                        state = FSM.ATTACKING;
-                    }
-                    else
-                    {
-                        turn = false;
-                    }
-                    break;
+            case FSM.IDLE:
+                if (dist < aggroDistance)
+                {
+                    state = FSM.ATTACKING;
+                }
+                else
+                {
 
-                case FSM.ATTACKING:
-                    if(dist < attackRange)
-                    {
-                        //attack
-                        turn = false;
-                    }
-                    else
-                    {
-                        PlanMove();
-                        state = FSM.MOVING;
-                    }
-                    break;
+                }
+                break;
 
-                case FSM.MOVING:
-                    if (Move())
-                    {
-                        turn = false;
-                    }
-                    break;
-            }
+            case FSM.ATTACKING:
+                if(dist < attackRange)
+                {
+                    //attack
+                }
+                else
+                {
+                    state = FSM.MOVING;
+                }
+                break;
+
+            case FSM.MOVING:
+
+                break;
         }
 	}
-
-    bool Move()
-    {
-        return true;
-    }
-
-    void PlanMove()
-    {
-
-    }
 
     float UpdateTarget()
     {
