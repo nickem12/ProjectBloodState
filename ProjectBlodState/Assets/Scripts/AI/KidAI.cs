@@ -6,7 +6,6 @@ namespace TGS
 {
     public class KidAI : MonoBehaviour
     {
-
         enum State
         {
             IDLE,
@@ -23,7 +22,6 @@ namespace TGS
         {
             tgs = TerrainGridSystem.instance;
             state = State.MOVESELECT;
-
         }
 
         // Update is called once per frame
@@ -49,7 +47,7 @@ namespace TGS
 
                 case State.MOVESELECT:
                     if (Input.GetMouseButtonUp(0))
-                    {                   //gets path when left mouse is released and over terrain
+                    {                               //gets path when left mouse is released and over terrain
                         int t_cell = tgs.cellHighlightedIndex;
                         tgs.CellFadeOut(t_cell, Color.red, 50);
                         if (t_cell != -1)
