@@ -112,6 +112,7 @@
     <Compile Include="Assets\Scripts\AI\EnemyAI.cs" />
     <Compile Include="Assets\Scripts\AI\EnemyStats.cs" />
     <Compile Include="Assets\Scripts\AI\KidAI.cs" />
+    <Compile Include="Assets\Scripts\Animation Helper Script\HelperAnimatiorScript.cs" />
     <Compile Include="Assets\Scripts\Characters\AlienStats.cs" />
     <Compile Include="Assets\Scripts\Characters\PlayerStats.cs" />
     <Compile Include="Assets\Scripts\General\Action_Bar.cs" />
