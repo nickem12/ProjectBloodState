@@ -100,6 +100,8 @@ public class Gameplay_Handler : MonoBehaviour {
                 {
                     Debug.Log("Hit Player for: " + damage);
                     TargetPlayer.GetComponent<PlayerStats>().Health -= (short)damage;
+                    // attacking animation  for aliens
+                    GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex).GetComponent<Animator>().SetBool("Attack", true);
                 }
                 GetComponent<EnemyTurnHandler>().ModifyEnemy(EnemyIndex, "Attack");
                 GetComponent<EnemyTurnHandler>().ModifyEnemy(EnemyIndex, "End");
@@ -161,13 +163,18 @@ public class Gameplay_Handler : MonoBehaviour {
                         case MoveState.MOVING:
                             if (moveCounter < moveList.Count)
                             {   //moves character
+                                // turn hanlder get character and do the  run  animation here
+                                GetComponent<TurnHandler>().GetCharacter(SelectChar).GetComponent<Animator>().SetFloat("Speed", .75f);
                                 Move(tgs.CellGetPosition(moveList[moveCounter]), GetComponent<TurnHandler>().GetCharacter(SelectChar));
+                                
+
                             }
                             else
                             {
                                 moveCounter = 0;
                                 MState = MoveState.MOVESELECT;
                                 GetComponent<TurnHandler>().ModifyCharacter(SelectChar, "Move");
+                                GetComponent<TurnHandler>().GetCharacter(SelectChar).GetComponent<Animator>().SetFloat("Speed", 0.0f);
                             }
                             break;
                     }
@@ -191,6 +198,9 @@ public class Gameplay_Handler : MonoBehaviour {
                                     hit.collider.gameObject.GetComponent<EnemyStats>().health -= (short)damage;
                                     Debug.Log("Hit enemy for: " + damage);
                                     GetComponent<TurnHandler>().ModifyCharacter(SelectChar, "Attack");
+                                    //turnhandler get character, then play attack animation for that character
+                                    GetComponent<TurnHandler>().GetCharacter(SelectChar).GetComponent<Animator>().SetTrigger("Aiming");
+                                    GetComponent<TurnHandler>().GetCharacter(SelectChar).GetComponent<Animator>().SetTrigger("Attacking");
                                 }
                             }
                         }
