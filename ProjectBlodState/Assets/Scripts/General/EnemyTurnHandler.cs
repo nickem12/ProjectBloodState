@@ -55,6 +55,10 @@ public class EnemyTurnHandler : MonoBehaviour {
             case "End":
                 if (EnemyList[EnemyIndex].GetComponent<EnemyStats>().End == true) { return true; }
                 break;
+
+            case "Dead":
+                if(EnemyList[EnemyIndex].GetComponent<EnemyStats>().health <= 0) { return true; }
+                break;
         }
         return false;
     }
@@ -98,5 +102,10 @@ public class EnemyTurnHandler : MonoBehaviour {
         {
             EnemyList[counter].GetComponent<EnemyStats>().End = true;
         }
+    }
+
+    public void UpdateList()
+    {
+        EnemyList = GameObject.FindGameObjectsWithTag("Enemy");
     }
 }

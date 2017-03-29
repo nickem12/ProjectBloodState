@@ -63,6 +63,11 @@ public class Gameplay_Handler : MonoBehaviour {
                 EnemyTurn();
                 if(GetComponent<EnemyTurnHandler>().CheckEnemy(EnemyIndex, "End"))
                 {
+                    if(GetComponent<EnemyTurnHandler>().CheckEnemy(EnemyIndex, "Dead"))
+                    {
+                        GameObject.Destroy(GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex));
+                        GetComponent<EnemyTurnHandler>().UpdateList();
+                    }
                     EnemyIndex++;
                     EState = EnemyState.IDLE;
                 }
@@ -240,7 +245,7 @@ public class Gameplay_Handler : MonoBehaviour {
 
     void Move(Vector3 in_vec, GameObject MoveChar)
     {
-        float speed = moveList.Count * 5f;
+        float speed = moveList.Count * 0.5f;
         float step = speed * Time.deltaTime;
 
         // target position must account the sphere height since the cellGetPosition will return the center of the cell which is at floor.
@@ -283,6 +288,11 @@ public class Gameplay_Handler : MonoBehaviour {
             }
         }
         return dist;
+    }
+
+    void CheckDead()
+    {
+
     }
 
 }
