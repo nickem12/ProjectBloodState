@@ -35,6 +35,7 @@ public class EnemyTurnHandler : MonoBehaviour {
         if (End_Turn_Counter == EnemyList.Length)
         {
             Debug.Log("All enemies haved ended their turn.");
+            Gameplay_Handler.Status = "All enemies haved ended their turn.";
             return true;
         }
         return false;
@@ -57,7 +58,7 @@ public class EnemyTurnHandler : MonoBehaviour {
                 break;
 
             case "Dead":
-                if(EnemyList[EnemyIndex].GetComponent<EnemyStats>().health <= 0) { return true; }
+                if(EnemyList[EnemyIndex].GetComponent<EnemyStats>().health <= 0) {; return true; }
                 break;
         }
         return false;
@@ -93,6 +94,7 @@ public class EnemyTurnHandler : MonoBehaviour {
 
     public GameObject GetEnemy(short EnemyIndex)
     {
+       
         return EnemyList[EnemyIndex];
     }
 

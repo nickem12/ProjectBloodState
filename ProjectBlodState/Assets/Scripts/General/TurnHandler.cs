@@ -1,14 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TurnHandler : MonoBehaviour
 {
+
+    public AudioSource[] sounds;
+    public AudioSource Voice;
+    int TheVoice;
+    
+
+
+
+
     public List<GameObject> PlayerList = new List<GameObject>();
 
     public void NewTurn()
     {
-        for(short counter = 0; counter < PlayerList.Count; counter++)
+
+         
+
+        for (short counter = 0; counter < PlayerList.Count; counter++)
         {
             PlayerList[counter].GetComponent<PlayerStats>().EndTurn = false;
             PlayerList[counter].GetComponent<PlayerStats>().Attacked = false;
@@ -104,6 +117,7 @@ public class TurnHandler : MonoBehaviour
         for(short counter = 0; counter < PlayerList.Count; counter++)
         {
             PlayerList[counter].GetComponent<PlayerStats>().EndTurn = true;
+           // Voice = sounds[30];
         }
     }
 

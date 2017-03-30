@@ -263,6 +263,7 @@
     <Compile Include="Assets\TerrainGridSystem\Scripts\TerrainGridSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Audio&apos;\Radio\Code Needed.txt" />
     <None Include="Assets\Characters\Models\PlayerCharacters\Kid_from_space\Standard Assets\Characters\ThirdPersonCharacter\ThirdPersonCharacterGuidelines.txt" />
     <None Include="Assets\Characters\Models\PlayerCharacters\Kid_from_space\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
     <None Include="Assets\Characters\Models\PlayerCharacters\Kid_from_space\Standard Assets\Effects\CinematicEffects(ALPHA)\AntiAliasing\FXAA\Resources\FXAA.shader" />
@@ -283,6 +284,7 @@
     <None Include="Assets\Characters\Models\PlayerCharacters\Kid_from_space\Standard Assets\Effects\CinematicEffects(BETA)\TonemappingColorGrading\Resources\TonemappingColorGrading.shader" />
     <None Include="Assets\Characters\Models\PlayerCharacters\RealisticCharacter\Shader\Rim_Diffuse.shader" />
     <None Include="Assets\Characters\Models\PlayerCharacters\Yurowm\Shaders\SkinShader.shader" />
+    <None Include="Assets\Fonts\Ailerons\Ailerons.txt" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramCompute.compute" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\HistogramRender.shader" />
     <None Include="Assets\PostProcessing\Editor Resources\Monitors\ParadeRender.shader" />

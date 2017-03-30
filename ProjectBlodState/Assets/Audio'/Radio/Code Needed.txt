@@ -1,0 +1,17 @@
+in script Camera_Controller:
+
+
+    public AudioSource[] sounds;
+    public AudioSource noise1;
+    public AudioSource noise2;
+
+
+
+
+
+
+
+Start():
+ sounds = GetComponents<AudioSource>();
+ noise1 = sounds[0];
+ noise2 = sounds[1];

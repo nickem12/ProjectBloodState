@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class Gameplay_Handler : MonoBehaviour {
 
+
+    public static string Status = "Starting Game";
+
+
     GameObject Select;
     GameObject Cam;
     public enum GameState { PLAYER, ENEMY }
@@ -15,6 +19,18 @@ public class Gameplay_Handler : MonoBehaviour {
     EnemyState EState;
     public short SelectChar;
 
+    public int IfVoice;
+
+    public AudioSource[] sounds;
+    public AudioSource FootStep;
+    public AudioSource Shoot;
+    public AudioSource EnemyScream;
+    public AudioSource EnemyHit;
+
+    public AudioSource Voice;
+    int TheVoice;
+
+
     TerrainGridSystem tgs;
     short moveCounter = 0;
     List<int> moveList;
@@ -23,12 +39,21 @@ public class Gameplay_Handler : MonoBehaviour {
     float attackRange = 5;
     short EnemyIndex = 0;
     float dist = 0;
-    public short Enemy_MoveDist = 10;
+    public short Enemy_MoveDist = 5;
+    public short Player_MoveDist = 12;
+
 
     public short PlayerRange;
 
     void Start ()
     {
+        sounds = GetComponents<AudioSource>();
+        FootStep = sounds[0];
+        Shoot = sounds[1];
+        EnemyScream = sounds[2];
+        EnemyHit = sounds[3];
+
+
         Select = GameObject.Find("GUI");
         Cam = GameObject.Find("Cam_obj");
         GState = GameState.PLAYER;
@@ -45,6 +70,22 @@ public class Gameplay_Handler : MonoBehaviour {
             case GameState.PLAYER:
                 if(Input.GetKeyDown(KeyCode.F))
                 {
+                    
+                    IfVoice = Random.Range(1, 3);
+
+                    switch(IfVoice)
+                    {
+                        case 1:
+                            TheVoice = Random.Range(4, 60);
+                            Voice = sounds[TheVoice];
+                            Voice.Play();
+                            break;
+                        default:
+
+                            break;
+                    }
+                    
+
                     GetComponent<TurnHandler>().EndTurn();
                 }
                 SelectChar = Select.GetComponent<Selected_Cotroller>().Selected_Character;
@@ -56,6 +97,7 @@ public class Gameplay_Handler : MonoBehaviour {
                     EnemyIndex = 0;
                     GetComponent<EnemyTurnHandler>().NewTurn();
                     Debug.Log("Enemy Turn Starting");
+                    Status = "Enemy Turn Starting";
                 }
                 break;
 
@@ -63,9 +105,16 @@ public class Gameplay_Handler : MonoBehaviour {
                 EnemyTurn();
                 if(GetComponent<EnemyTurnHandler>().CheckEnemy(EnemyIndex, "End"))
                 {
-                    if(GetComponent<EnemyTurnHandler>().CheckEnemy(EnemyIndex, "Dead"))
+                  
+
+                    if (GetComponent<EnemyTurnHandler>().CheckEnemy(EnemyIndex, "Dead"))
                     {
+                        if (!EnemyScream.isPlaying)
+                        {
+                            EnemyScream.Play();
+                        }
                         GameObject.Destroy(GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex));
+                        //EnemyIndex--;
                         GetComponent<EnemyTurnHandler>().UpdateList();
                     }
                     EnemyIndex++;
@@ -77,6 +126,7 @@ public class Gameplay_Handler : MonoBehaviour {
                     GState = GameState.PLAYER;
                     GetComponent<TurnHandler>().NewTurn();
                     Debug.Log("Player Turn Starting");
+                    Status = "Player Turn Starting";
                 }
                 break;
         }
@@ -103,7 +153,12 @@ public class Gameplay_Handler : MonoBehaviour {
                 int damage = GetComponent<Attack_Controller>().AttackTarget(GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex), TargetPlayer, PlayerRange);
                 if (damage > 0)
                 {
+                    if (!EnemyHit.isPlaying)
+                    {
+                        EnemyHit.Play();
+                    }
                     Debug.Log("Hit Player for: " + damage);
+                    Status = "Hit Player for: " + damage;
                     TargetPlayer.GetComponent<PlayerStats>().Health -= (short)damage;
                     // attacking animation  for aliens
                     GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex).GetComponent<Animator>().SetBool("Attack", true);
@@ -161,21 +216,36 @@ public class Gameplay_Handler : MonoBehaviour {
                         case MoveState.MOVESELECT:
                             if (Input.GetMouseButtonUp(0))
                             {   //gets path when left mouse is released and over terrain
+                                Status = "Player Is Moving";
                                 GetPath(GetComponent<TurnHandler>().GetCharacter(SelectChar), tgs.cellHighlightedIndex);
                             }
                             break;
 
                         case MoveState.MOVING:
-                            if (moveCounter < moveList.Count)
-                            {   //moves character
-                                // turn hanlder get character and do the  run  animation here
-                                GetComponent<TurnHandler>().GetCharacter(SelectChar).GetComponent<Animator>().SetFloat("Speed", .75f);
-                                Move(tgs.CellGetPosition(moveList[moveCounter]), GetComponent<TurnHandler>().GetCharacter(SelectChar));
-                                
+                            if (moveCounter <= Player_MoveDist)
+                            {
+                                if (moveCounter < moveList.Count)
+                                {   //moves character
 
+                                    if (!FootStep.isPlaying)
+                                    {
+                                        FootStep.Play();
+                                    }
+
+
+                                    // turn hanlder get character and do the  run  animation here
+                                    GetComponent<TurnHandler>().GetCharacter(SelectChar).GetComponent<Animator>().SetFloat("Speed", .75f);
+                                    Move(tgs.CellGetPosition(moveList[moveCounter]), GetComponent<TurnHandler>().GetCharacter(SelectChar));
+                                   
+
+                                }
                             }
                             else
                             {
+                                if (!FootStep.isPlaying)
+                                {
+                                    FootStep.Stop();
+                                }
                                 moveCounter = 0;
                                 MState = MoveState.MOVESELECT;
                                 GetComponent<TurnHandler>().ModifyCharacter(SelectChar, "Move");
@@ -191,6 +261,7 @@ public class Gameplay_Handler : MonoBehaviour {
                 {
                     if (Input.GetMouseButtonUp(0))
                     {
+                        Shoot.Play();
                         RaycastHit hit;
                         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                         if (Physics.Raycast(ray, out hit, 100.0f))
@@ -202,6 +273,19 @@ public class Gameplay_Handler : MonoBehaviour {
                                 {
                                     hit.collider.gameObject.GetComponent<EnemyStats>().health -= (short)damage;
                                     Debug.Log("Hit enemy for: " + damage);
+                                    Status = "Hit enemy for:  " + damage;
+
+                                    while (GetComponent<EnemyTurnHandler>().CheckEnemy(EnemyIndex, "Dead"))
+                                    {
+                                        if (!EnemyScream.isPlaying)
+                                        {
+                                            EnemyScream.Play();
+                                        }
+                                        GameObject.Destroy(GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex));
+                                        GetComponent<EnemyTurnHandler>().UpdateList();
+                                        EnemyIndex++;
+                                    }
+                                    
                                     GetComponent<TurnHandler>().ModifyCharacter(SelectChar, "Attack");
                                     //turnhandler get character, then play attack animation for that character
                                     GetComponent<TurnHandler>().GetCharacter(SelectChar).GetComponent<Animator>().SetTrigger("Aiming");
@@ -216,7 +300,7 @@ public class Gameplay_Handler : MonoBehaviour {
             case 3:
                 if (!GetComponent<TurnHandler>().CheckCharacter(SelectChar, "Ability") && !GetComponent<TurnHandler>().CheckCharacter(SelectChar, "End"))
                 {
-
+                    
                 }
                 break;
         }
@@ -245,7 +329,13 @@ public class Gameplay_Handler : MonoBehaviour {
 
     void Move(Vector3 in_vec, GameObject MoveChar)
     {
+
+        
         float speed = moveList.Count * 0.5f;
+        if (moveList.Count > 12)
+        {
+           speed = 12 * 0.5f;
+        }
         float step = speed * Time.deltaTime;
 
         // target position must account the sphere height since the cellGetPosition will return the center of the cell which is at floor.
