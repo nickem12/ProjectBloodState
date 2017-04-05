@@ -9,19 +9,17 @@ public class TurnHandler : MonoBehaviour
     public AudioSource[] sounds;
     public AudioSource Voice;
     int TheVoice;
-    
 
+    GameObject[] PlayerList;
 
-
-
-    public List<GameObject> PlayerList = new List<GameObject>();
+    private void Start()
+    {
+        UpdateList();
+    }
 
     public void NewTurn()
     {
-
-         
-
-        for (short counter = 0; counter < PlayerList.Count; counter++)
+        for (short counter = 0; counter < PlayerList.Length; counter++)
         {
             PlayerList[counter].GetComponent<PlayerStats>().EndTurn = false;
             PlayerList[counter].GetComponent<PlayerStats>().Attacked = false;
@@ -35,14 +33,14 @@ public class TurnHandler : MonoBehaviour
     {
         short Counter = 0;
         short End_Turn_Counter = 0;
-        for (Counter = 0; Counter < PlayerList.Count; Counter++)
+        for (Counter = 0; Counter < PlayerList.Length; Counter++)
         {
             if (PlayerList[Counter].GetComponent<PlayerStats>().EndTurn)
             {
                 End_Turn_Counter++;
             }
         }
-        if (End_Turn_Counter == PlayerList.Count)
+        if (End_Turn_Counter == PlayerList.Length)
         {
             Debug.Log("All characters haved ended their turn.");
             return true;
@@ -114,16 +112,16 @@ public class TurnHandler : MonoBehaviour
 
     public void EndTurn()
     {
-        for(short counter = 0; counter < PlayerList.Count; counter++)
+        for(short counter = 0; counter < PlayerList.Length; counter++)
         {
             PlayerList[counter].GetComponent<PlayerStats>().EndTurn = true;
            // Voice = sounds[30];
         }
     }
 
-    ~TurnHandler()
+    public void UpdateList()
     {
-        PlayerList.Clear();
+        PlayerList = GameObject.FindGameObjectsWithTag("ActualPlayer");
     }
 
 }

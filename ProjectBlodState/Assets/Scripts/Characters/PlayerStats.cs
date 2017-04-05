@@ -15,4 +15,12 @@ public class PlayerStats : MonoBehaviour
     {
         Health = 20;
     }
+
+    void Update()
+    {
+        if(Health <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+    }
 }

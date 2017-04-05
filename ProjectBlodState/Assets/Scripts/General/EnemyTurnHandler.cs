@@ -13,7 +13,8 @@ public class EnemyTurnHandler : MonoBehaviour {
 
     public void NewTurn()
     {
-        for(short counter = 0; counter < EnemyList.Length; counter++)
+        UpdateList();
+        for (short counter = 0; counter < EnemyList.Length; counter++)
         {
             EnemyList[counter].GetComponent<EnemyStats>().Moved = false;
             EnemyList[counter].GetComponent<EnemyStats>().Attacked = false;
@@ -23,6 +24,7 @@ public class EnemyTurnHandler : MonoBehaviour {
 
     public bool Perform_Turn()
     {
+        UpdateList();
         short Counter = 0;
         short End_Turn_Counter = 0;
         for (Counter = 0; Counter < EnemyList.Length; Counter++)
@@ -43,6 +45,7 @@ public class EnemyTurnHandler : MonoBehaviour {
 
     public bool CheckEnemy(short EnemyIndex, string Command)
     {
+        UpdateList();
         switch (Command)
         {
             case "Move":
@@ -58,7 +61,7 @@ public class EnemyTurnHandler : MonoBehaviour {
                 break;
 
             case "Dead":
-                if(EnemyList[EnemyIndex].GetComponent<EnemyStats>().health <= 0) {; return true; }
+                if(EnemyList[EnemyIndex].GetComponent<EnemyStats>().health <= 0) { return true; }
                 break;
         }
         return false;
@@ -66,6 +69,7 @@ public class EnemyTurnHandler : MonoBehaviour {
 
     public void ModifyEnemy(short EnemyIndex, string Command)
     {
+        UpdateList();
         switch (Command)
         {
             case "Move":
@@ -94,7 +98,6 @@ public class EnemyTurnHandler : MonoBehaviour {
 
     public GameObject GetEnemy(short EnemyIndex)
     {
-       
         return EnemyList[EnemyIndex];
     }
 

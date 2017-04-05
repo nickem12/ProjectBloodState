@@ -65,14 +65,14 @@ public class Gameplay_Handler : MonoBehaviour {
 	
 	void Update ()
     {
-        switch(GState)
+        GetComponent<EnemyTurnHandler>().UpdateList();
+        GetComponent<TurnHandler>().UpdateList();
+        switch (GState)
         {
             case GameState.PLAYER:
                 if(Input.GetKeyDown(KeyCode.F))
                 {
-                    
                     IfVoice = Random.Range(1, 3);
-
                     switch(IfVoice)
                     {
                         case 1:
@@ -84,8 +84,6 @@ public class Gameplay_Handler : MonoBehaviour {
 
                             break;
                     }
-                    
-
                     GetComponent<TurnHandler>().EndTurn();
                 }
                 SelectChar = Select.GetComponent<Selected_Cotroller>().Selected_Character;
@@ -105,18 +103,6 @@ public class Gameplay_Handler : MonoBehaviour {
                 EnemyTurn();
                 if(GetComponent<EnemyTurnHandler>().CheckEnemy(EnemyIndex, "End"))
                 {
-                  
-
-                    if (GetComponent<EnemyTurnHandler>().CheckEnemy(EnemyIndex, "Dead"))
-                    {
-                        if (!EnemyScream.isPlaying)
-                        {
-                            EnemyScream.Play();
-                        }
-                        GameObject.Destroy(GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex));
-                        //EnemyIndex--;
-                        GetComponent<EnemyTurnHandler>().UpdateList();
-                    }
                     EnemyIndex++;
                     EState = EnemyState.IDLE;
                 }
@@ -222,23 +208,15 @@ public class Gameplay_Handler : MonoBehaviour {
                             break;
 
                         case MoveState.MOVING:
-                            if (moveCounter <= Player_MoveDist)
+                            if (moveCounter <= Player_MoveDist && moveCounter < moveList.Count)
                             {
-                                if (moveCounter < moveList.Count)
-                                {   //moves character
-
-                                    if (!FootStep.isPlaying)
-                                    {
-                                        FootStep.Play();
-                                    }
-
-
-                                    // turn hanlder get character and do the  run  animation here
-                                    GetComponent<TurnHandler>().GetCharacter(SelectChar).GetComponent<Animator>().SetFloat("Speed", .75f);
-                                    Move(tgs.CellGetPosition(moveList[moveCounter]), GetComponent<TurnHandler>().GetCharacter(SelectChar));
-                                   
-
+                                if (!FootStep.isPlaying)
+                                {
+                                    FootStep.Play();
                                 }
+                                // turn hanlder get character and do the  run  animation here
+                                GetComponent<TurnHandler>().GetCharacter(SelectChar).GetComponent<Animator>().SetFloat("Speed", .75f);
+                                Move(tgs.CellGetPosition(moveList[moveCounter]), GetComponent<TurnHandler>().GetCharacter(SelectChar));
                             }
                             else
                             {
@@ -275,15 +253,9 @@ public class Gameplay_Handler : MonoBehaviour {
                                     Debug.Log("Hit enemy for: " + damage);
                                     Status = "Hit enemy for:  " + damage;
 
-                                    while (GetComponent<EnemyTurnHandler>().CheckEnemy(EnemyIndex, "Dead"))
+                                    if (!EnemyScream.isPlaying)
                                     {
-                                        if (!EnemyScream.isPlaying)
-                                        {
-                                            EnemyScream.Play();
-                                        }
-                                        GameObject.Destroy(GetComponent<EnemyTurnHandler>().GetEnemy(EnemyIndex));
-                                        GetComponent<EnemyTurnHandler>().UpdateList();
-                                        EnemyIndex++;
+                                        EnemyScream.Play();
                                     }
                                     
                                     GetComponent<TurnHandler>().ModifyCharacter(SelectChar, "Attack");
@@ -314,9 +286,12 @@ public class Gameplay_Handler : MonoBehaviour {
             int startCell = tgs.CellGetIndex(tgs.CellGetAtPosition(MoveChar.transform.position, true));
             moveList = tgs.FindPath(startCell, targetCell, 0);
             if (moveList == null) return;
-            for (int counter = 0; counter < moveList.Count; counter++)
+            if (MoveChar.tag == "ActualPlayer")
             {
-                tgs.CellFadeOut(moveList[counter], Color.green, 5f);
+                for (int counter = 0; counter < moveList.Count; counter++)
+                {
+                    tgs.CellFadeOut(moveList[counter], Color.green, 5f);
+                }
             }
             moveCounter = 0;
             MState = MoveState.MOVING;
@@ -329,8 +304,6 @@ public class Gameplay_Handler : MonoBehaviour {
 
     void Move(Vector3 in_vec, GameObject MoveChar)
     {
-
-        
         float speed = moveList.Count * 0.5f;
         if (moveList.Count > 12)
         {
